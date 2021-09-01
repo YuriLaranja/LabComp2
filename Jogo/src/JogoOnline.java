@@ -4,46 +4,46 @@ public class JogoOnline {
 
 	public static ArrayList<Jogador> listaJogadores = new ArrayList<>();
 
-	public static boolean CadastrarJogador(String username, String senha) {
+	public static Jogador CadastrarJogador(String username, String senha) {
 		Jogador novoJogador = new Jogador(username, senha);
 
 		for (Jogador i : listaJogadores) {
 			if (i.userName.equals(novoJogador.userName)) {
-				return false;
+				
 			}
 		}
 
 		listaJogadores.add(novoJogador);
 
-		return true;
+		return novoJogador;
 	}
 
-	public static boolean Login(String username, String senha) {
-
+	public static void Login(String username, String senha) throws UsuarioInexistenteException, SenhaInvalidaException {
+		
 		for (Jogador i : listaJogadores) {
+			
+			
 			if (i.userName.equals(username)) {
-				if (i.status == true) {
-					// usuario ja ta online
-					return false;
-				} else if (i.senha.equals(senha)) {
+				 if (i.senha.equals(senha)) {
 					i.status = true;
-					return i.status;
-				} else {
+					
+				} else throw new SenhaInvalidaException() ;
 					// senha errada
-					return false;
-				}
+					
 			}
 		}
-		return false;
+		
 	}
 
-	public static boolean Logout(String username, String senha) {
-		boolean teste = JogoOnline.Login(username, senha);
-		if (teste == false) {
-			return false;
+	public static boolean Logout(Jogador jogador) {
+		
+		if (jogador.getStatus() == false) throw new RuntimeException("O Jogador precisa estar online");
+		else {
+			jogador.setStatus(false);
+			return true;
 		}
-		return true;
-	}
+			
+		}
 
 	public static Partida IniciarPartida(Jogador jogador1, Jogador jogador2) {
 

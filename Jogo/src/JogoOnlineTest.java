@@ -2,65 +2,61 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class JogoOnlineTest {
 	public Jogador julio, laranja, yurij,Giovanna,elias;
 
 	@Before
-	public void setUp() {
-		JogoOnline.CadastrarJogador("yurhhji", "12345");
+	public void setUp() throws UsuarioInexistenteException, SenhaInvalidaException {
+		yurij = JogoOnline.CadastrarJogador("yurhhji", "12345");
 		
-		JogoOnline.CadastrarJogador("laranja", "12");
-		JogoOnline.Login("julio", "12345");
-		JogoOnline.CadastrarJogador("elias", "123456789");
+		laranja = JogoOnline.CadastrarJogador("laranja", "12");
+		
+		elias =JogoOnline.CadastrarJogador("elias", "123456789");
 		JogoOnline.Login("laranja", "12");
-		julio = JogoOnline.listaJogadores.get(1);
-		laranja = JogoOnline.listaJogadores.get(2);
-		yurij = JogoOnline.listaJogadores.get(0);
 		
-		JogoOnline.CadastrarJogador("julio", "12345");
+		
+		julio = JogoOnline.CadastrarJogador("julio", "12345");
+		JogoOnline.Login("julio", "12345");
 	}
 
-	@Test
-	public void testarcadastroUserIgual() {
-		assertEquals("Cadastro com usuario iguais não funciona", false, JogoOnline.CadastrarJogador("julio", "aaaa"));
-	}
+	
 
 	@Test
-	public void testarLoginSenhaErrada() {
-		assertEquals("Login com senha errada nao funciona", false, JogoOnline.Login("julio", "123456"));
-
-	}
-
-	@Test
-	public void testarUsuariOnline() {
-
-		assertEquals("Login com usuario Online nao funciona", false, JogoOnline.Login("julio", "12345"));
+	public void testarLoginSenhaErrada() throws SenhaInvalidaException, UsuarioInexistenteException {
+		Jogador marcio = JogoOnline.CadastrarJogador("marcio", "877");
+		JogoOnline.Login("marcio", "875");
+		
 
 	}
 
-	@Test
-	public void testarUsuariOfLline() {
+	
 
-		assertEquals("Login com usaurio ofline e user e senha certa funciona", true,
-				JogoOnline.Login("yurhhji", "12345"));
+	
+
+	@Test
+	public void testarUsuariOfLline() throws UsuarioInexistenteException, SenhaInvalidaException {
+		JogoOnline.Login("yurhhji", "12345");
+		assertEquals("Login com usuario ofline e user e senha certa funciona", true,
+				yurij.getStatus());
 
 	}
 
 	@Test
-	public void testarSenhacerta() {
-		JogoOnline.CadastrarJogador("Giovanna", "12345");
-
-		assertEquals("Login com senha certa funciona", true, JogoOnline.Login("Giovanna", "12345"));
+	public void testarSenhacerta() throws UsuarioInexistenteException, SenhaInvalidaException {
+		Jogador gio =JogoOnline.CadastrarJogador("Giovanna", "12345");
+		JogoOnline.Login("Giovanna", "12345");
+		
+		assertEquals("Login com senha certa funciona", true, gio.getStatus());
 
 	}
 
 	@Test
 	public void testarlogoutUsuarioOnline() {
-		JogoOnline.CadastrarJogador("uri", "100");
-		JogoOnline.Login("uri", "100");
-
-		assertEquals("Login com senha certa funciona", false, JogoOnline.Logout("uri", "100"));
+		Jogador cesar = JogoOnline.CadastrarJogador("uri", "100");
+		
+		assertEquals("Login com senha certa funciona", false, JogoOnline.Logout(cesar));
 
 	}
 
@@ -78,7 +74,7 @@ public class JogoOnlineTest {
 	}
 
 	@Test
-	public void testarvitoria1() {
+	public void testarvitoria1() throws UsuarioInexistenteException, SenhaInvalidaException {
 
 		JogoOnline.Login("yurhhji", "12345");
 		Partida partida2 = JogoOnline.IniciarPartida(laranja, yurij);
@@ -102,14 +98,17 @@ public class JogoOnlineTest {
 	}
 
 	@Test
-	public void testaradversário() {
-		JogoOnline.Logout("Giovanna", "12345");
-		JogoOnline.Logout("julio", "12345");
-		JogoOnline.Login("Giovanna", "12345");
-		Giovanna = JogoOnline.listaJogadores.get(5);
+	public void testaradversário() throws UsuarioInexistenteException, SenhaInvalidaException {
+		Jogador giovanna2 = JogoOnline.CadastrarJogador("aaa", "aaa");
+		JogoOnline.Login("aaa", "aaa");
+		JogoOnline.Logout(julio);
+		JogoOnline.Login("yurhhji", "12345");
+		
+		JogoOnline.Logout(laranja);
 		
 		
-		assertEquals("usuario encontrado", yurij, JogoOnline.escolherAdversario(Giovanna));
+		System.out.println(JogoOnline.escolherAdversario(giovanna2).getUsername());
+		assertEquals("usuario encontrado", "yurhhji", JogoOnline.escolherAdversario(giovanna2).getUsername());
 		
 
 	}
